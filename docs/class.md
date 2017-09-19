@@ -668,6 +668,26 @@ foo.classMethod()
 
 上面代码中，`Foo`类的`classMethod`方法前有`static`关键字，表明该方法是一个静态方法，可以直接在`Foo`类上调用（`Foo.classMethod()`），而不是在`Foo`类的实例上调用。如果在实例上调用静态方法，会抛出一个错误，表示不存在该方法。
 
+注意，如果静态方法包含`this`关键字，这个`this`指的是类，而不是实例。
+
+```javascript
+class Foo {
+  static bar () {
+    this.baz();
+  }
+  static baz () {
+    console.log('hello');
+  }
+  baz () {
+    console.log('world');
+  }
+}
+
+Foo.bar() // hello
+```
+
+上面代码中，静态方法`bar`调用了`this.baz`，这里的`this`指的是`Foo`类，而不是`Foo`的实例，等同于调用`Foo.baz`。另外，从这个例子还可以看出，静态方法可以与非静态方法重名。
+
 父类的静态方法，可以被子类继承。
 
 ```javascript
@@ -824,7 +844,7 @@ class Foo {
 
 ## new.target属性
 
-`new`是从构造函数生成实例的命令。ES6 为`new`命令引入了一个`new.target`属性，该属性一般用在在构造函数之中，返回`new`命令作用于的那个构造函数。如果构造函数不是通过`new`命令调用的，`new.target`会返回`undefined`，因此这个属性可以用来确定构造函数是怎么调用的。
+`new`是从构造函数生成实例的命令。ES6 为`new`命令引入了一个`new.target`属性，该属性一般用在构造函数之中，返回`new`命令作用于的那个构造函数。如果构造函数不是通过`new`命令调用的，`new.target`会返回`undefined`，因此这个属性可以用来确定构造函数是怎么调用的。
 
 ```javascript
 function Person(name) {

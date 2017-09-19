@@ -102,7 +102,7 @@ Promise 的最大问题是代码冗余，原来的任务被 Promise 包装了一
 举例来说，读取文件的协程写法如下。
 
 ```javascript
-function *asyncJob() {
+function* asyncJob() {
   // ...其他代码
   var f = yield readFile(fileA);
   // ...其他代码
@@ -506,10 +506,10 @@ run(g);
 
 ```javascript
 var g = function* (){
-  var f1 = yield readFile('fileA');
-  var f2 = yield readFile('fileB');
+  var f1 = yield readFileThunk('fileA');
+  var f2 = yield readFileThunk('fileB');
   // ...
-  var fn = yield readFile('fileN');
+  var fn = yield readFileThunk('fileN');
 };
 
 run(g);

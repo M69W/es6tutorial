@@ -65,7 +65,7 @@ s.charCodeAt(0) // 55362
 s.charCodeAt(1) // 57271
 ```
 
-上面代码中，汉字“𠮷”（注意，这个字不是”吉祥“的”吉“）的码点是`0x20BB7`，UTF-16编码为`0xD842 0xDFB7`（十进制为`55362 57271`），需要`4`个字节储存。对于这种`4`个字节的字符，JavaScript不能正确处理，字符串长度会误判为`2`，而且`charAt`方法无法读取整个字符，`charCodeAt`方法只能分别返回前两个字节和后两个字节的值。
+上面代码中，汉字“𠮷”（注意，这个字不是“吉祥”的“吉”）的码点是`0x20BB7`，UTF-16编码为`0xD842 0xDFB7`（十进制为`55362 57271`），需要`4`个字节储存。对于这种`4`个字节的字符，JavaScript不能正确处理，字符串长度会误判为`2`，而且`charAt`方法无法读取整个字符，`charCodeAt`方法只能分别返回前两个字节和后两个字节的值。
 
 ES6提供了`codePointAt`方法，能够正确处理4个字节储存的字符，返回一个字符的码点。
 
@@ -232,8 +232,8 @@ ES6 提供字符串实例的`normalize()`方法，用来将字符的不同表示
 传统上，JavaScript只有`indexOf`方法，可以用来确定一个字符串是否包含在另一个字符串中。ES6又提供了三种新方法。
 
 - **includes()**：返回布尔值，表示是否找到了参数字符串。
-- **startsWith()**：返回布尔值，表示参数字符串是否在源字符串的头部。
-- **endsWith()**：返回布尔值，表示参数字符串是否在源字符串的尾部。
+- **startsWith()**：返回布尔值，表示参数字符串是否在原字符串的头部。
+- **endsWith()**：返回布尔值，表示参数字符串是否在原字符串的尾部。
 
 ```javascript
 var s = 'Hello world!';
@@ -450,7 +450,7 @@ var y = 2;
 
 var obj = {x: 1, y: 2};
 `${obj.x + obj.y}`
-// 3
+// "3"
 ```
 
 模板字符串之中还能调用函数。
@@ -851,7 +851,8 @@ tag`First line\nSecond line`
 
 function tag(strings) {
   console.log(strings.raw[0]);
-  // "First line\\nSecond line"
+  // strings.raw[0] 为 "First line\\nSecond line"
+  // 打印输出 "First line\nSecond line"
 }
 ```
 

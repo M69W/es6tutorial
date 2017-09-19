@@ -67,6 +67,12 @@ function foo(x = 5) {
 使用参数默认值时，函数不能有同名参数。
 
 ```javascript
+// 不报错
+function foo(x, x, y) {
+  // ...
+}
+
+// 报错
 function foo(x, x, y = 1) {
   // ...
 }
@@ -98,15 +104,25 @@ function foo({x, y = 5}) {
   console.log(x, y);
 }
 
-foo({}) // undefined, 5
-foo({x: 1}) // 1, 5
-foo({x: 1, y: 2}) // 1, 2
+foo({}) // undefined 5
+foo({x: 1}) // 1 5
+foo({x: 1, y: 2}) // 1 2
 foo() // TypeError: Cannot read property 'x' of undefined
 ```
 
-上面代码使用了对象的解构赋值默认值，而没有使用函数参数的默认值。只有当函数`foo`的参数是一个对象时，变量`x`和`y`才会通过解构赋值而生成。如果函数`foo`调用时参数不是对象，变量`x`和`y`就不会生成，从而报错。如果参数对象没有`y`属性，`y`的默认值5才会生效。
+上面代码只使用了对象的解构赋值默认值，没有使用函数参数的默认值。只有当函数`foo`的参数是一个对象时，变量`x`和`y`才会通过解构赋值生成。如果函数`foo`调用时没提供参数，变量`x`和`y`就不会生成，从而报错。通过提供函数参数的默认值，就可以避免这种情况。
 
-下面是另一个对象的解构赋值默认值的例子。
+```javascript
+function foo({x, y = 5} = {}) {
+  console.log(x, y);
+}
+
+foo() // undefined 5
+```
+
+上面代码指定，如果没有提供参数，函数`foo`的参数默认为一个空对象。
+
+下面是另一个解构赋值默认值的例子。
 
 ```javascript
 function fetch(url, { body = '', method = 'GET', headers = {} }) {
@@ -120,9 +136,7 @@ fetch('http://example.com')
 // 报错
 ```
 
-上面代码中，如果函数`fetch`的第二个参数是一个对象，就可以为它的三个属性设置默认值。
-
-上面的写法不能省略第二个参数，如果结合函数参数的默认值，就可以省略第二个参数。这时，就出现了双重默认值。
+上面代码中，如果函数`fetch`的第二个参数是一个对象，就可以为它的三个属性设置默认值。这种写法不能省略第二个参数，如果结合函数参数的默认值，就可以省略第二个参数。这时，就出现了双重默认值。
 
 ```javascript
 function fetch(url, { method = 'GET' } = {}) {
@@ -156,15 +170,15 @@ function m2({x, y} = { x: 0, y: 0 }) {
 m1() // [0, 0]
 m2() // [0, 0]
 
-// x和y都有值的情况
+// x 和 y 都有值的情况
 m1({x: 3, y: 8}) // [3, 8]
 m2({x: 3, y: 8}) // [3, 8]
 
-// x有值，y无值的情况
+// x 有值，y 无值的情况
 m1({x: 3}) // [3, 0]
 m2({x: 3}) // [3, undefined]
 
-// x和y都无值的情况
+// x 和 y 都无值的情况
 m1({}) // [0, 0];
 m2({}) // [undefined, undefined]
 
@@ -225,7 +239,7 @@ foo(undefined, null)
 
 上面代码中，`length`属性的返回值，等于函数的参数个数减去指定了默认值的参数个数。比如，上面最后一个函数，定义了3个参数，其中有一个参数`c`指定了默认值，因此`length`属性等于`3`减去`1`，最后得到`2`。
 
-这是因为`length`属性的含义是，该函数预期传入的参数个数。某个参数指定默认值以后，预期传入的参数个数就不包括这个参数了。同理，rest 参数也不会计入`length`属性。
+这是因为`length`属性的含义是，该函数预期传入的参数个数。某个参数指定默认值以后，预期传入的参数个数就不包括这个参数了。同理，后文的 rest 参数也不会计入`length`属性。
 
 ```javascript
 (function(...args) {}).length // 0
@@ -299,7 +313,7 @@ foo() // ReferenceError: x is not defined
 ```javascript
 let foo = 'outer';
 
-function bar(func = x => foo) {
+function bar(func = () => foo) {
   let foo = 'inner';
   console.log(func());
 }
@@ -413,7 +427,7 @@ const sortNumbers = (...numbers) => numbers.sort();
 
 上面代码的两种写法，比较后可以发现，rest 参数的写法更自然也更简洁。
 
-rest 参数中的变量代表一个数组，所以数组特有的方法都可以用于这个变量。下面是一个利用 rest 参数改写数组`push`方法的例子。
+`arguments`对象不是数组，而是一个类似数组的对象。所以为了使用数组的方法，必须使用`Array.prototype.slice.call`先将其转为数组。rest 参数就不存在这个问题，它就是一个真正的数组，数组特有的方法都可以使用。下面是一个利用 rest 参数改写数组`push`方法的例子。
 
 ```javascript
 function push(array, ...items) {
@@ -610,10 +624,20 @@ var sum = function(num1, num2) {
 var sum = (num1, num2) => { return num1 + num2; }
 ```
 
-由于大括号被解释为代码块，所以如果箭头函数直接返回一个对象，必须在对象外面加上括号。
+由于大括号被解释为代码块，所以如果箭头函数直接返回一个对象，必须在对象外面加上括号，否则会报错。
 
 ```javascript
-var getTempItem = id => ({ id: id, name: "Temp" });
+// 报错
+let getTempItem = id => { id: id, name: "Temp" };
+
+// 不报错
+let getTempItem = id => ({ id: id, name: "Temp" });
+```
+
+如果箭头函数只有一行语句，且不需要返回值，可以采用下面的写法，就不用写大括号了。
+
+```javascript
+let fn = () => void doesNotReturn();
 ```
 
 箭头函数可以与变量解构结合使用。
@@ -1304,4 +1328,41 @@ clownsEverywhere(
 ```
 
 这样的规定也使得，函数参数与数组和对象的尾逗号规则，保持一致了。
+
+## catch 语句的参数
+
+目前，有一个[提案](https://github.com/tc39/proposal-optional-catch-binding)，允许`try...catch`结构中的`catch`语句调用时不带有参数。这个提案跟参数有关，也放在这一章介绍。
+
+传统的写法是`catch`语句必须带有参数，用来接收`try`代码块抛出的错误。
+
+```javascript
+try {
+  //  ···
+} catch (error) {
+  //  ···
+}
+```
+
+新的写法允许省略`catch`后面的参数，而不报错。
+
+```javascript
+try {
+  //  ···
+} catch {
+  //  ···
+}
+```
+
+新写法只在不需要错误实例的情况下有用，因此不及传统写法的用途广。
+
+```javascript
+let jsonData;
+try {
+  jsonData = JSON.parse(str);
+} catch {
+  jsonData = DEFAULT_DATA;
+}
+```
+
+上面代码中，`JSON.parse`报错只有一种可能：解析失败。因此，可以不需要抛出的错误实例。
 

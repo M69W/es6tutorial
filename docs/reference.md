@@ -90,6 +90,7 @@
 - Derick Bailey, [Do ES6 Arrow Functions Really Solve “this” In JavaScript?](http://derickbailey.com/2015/09/28/do-es6-arrow-functions-really-solve-this-in-javascript/)：使用箭头函数处理this指向，必须非常小心
 - Mark McDonnell, [Understanding recursion in functional JavaScript programming](http://www.integralist.co.uk/posts/js-recursion.html): 如何自己实现尾递归优化
 - Nicholas C. Zakas, [The ECMAScript 2016 change you probably don't know](https://www.nczonline.net/blog/2016/10/the-ecmascript-2016-change-you-probably-dont-know/): 使用参数默认值时，不能在函数内部显式开启严格模式
+- Axel Rauschmayer, [ES proposal: optional catch binding](http://2ality.com/2017/08/optional-catch-binding.html)
 
 ## 对象
 
@@ -214,6 +215,7 @@
 - Bradley Meck, [ES6 Module Interoperability](https://github.com/nodejs/node-eps/blob/master/002-es6-modules.md): 介绍 Node 如何处理 ES6 语法加载 CommonJS 模块
 - Axel Rauschmayer, [Making transpiled ES modules more spec-compliant](http://www.2ality.com/2017/01/babel-esm-spec-mode.html): ES6 模块编译成 CommonJS 模块的详细介绍
 - Axel Rauschmayer, [ES proposal: import() – dynamically importing ES modules](http://www.2ality.com/2017/01/import-operator.html): import() 的用法
+- Node EPS, [ES Module Interoperability](https://github.com/nodejs/node-eps/blob/master/002-es-modules.md): Node 对 ES6 模块的处理规格
 
 ## 二进制数组
 
